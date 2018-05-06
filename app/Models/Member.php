@@ -28,7 +28,7 @@ class Member extends Authenticatable
     }
 
     public function company(){
-        return $this->hasOne('App\Models\Company');
+        return $this->hasOne('App\Models\Company', 'userid');
     }
 
     private function generateUserName(){
