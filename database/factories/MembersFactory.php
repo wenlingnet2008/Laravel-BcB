@@ -5,7 +5,7 @@ use App\Models\Member;
 $factory->define(Member::class, function (Faker $faker) {
     static $password;
     return [
-        "name" => $faker->unique()->word,
+        "name" => $faker->userName,
         "password" => $password ?: $password = bcrypt('secret'),
         'email' => $faker->unique()->safeEmail,
         "gender" => $faker->titleMale,
