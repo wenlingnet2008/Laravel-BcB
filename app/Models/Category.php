@@ -14,7 +14,7 @@ class Category extends Model
     public $timestamps = false;
     protected $category_name = 'name';
 
-    protected $fillable = ['catname'];
+    protected $fillable = ['name'];
 
     /**
      * 分类模型 和 品牌模型， 系列模型 都存在多对多的关系 ，所以使用多态关联, 建立一张中间表即可

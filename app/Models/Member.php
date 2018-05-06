@@ -32,7 +32,7 @@ class Member extends Authenticatable
     }
 
     private function generateUserName(){
-        if($this->where('user_name',$this->true_name)->first()){
+        if($this->where('name',$this->true_name)->first()){
             return uniqid(substr($this->true_name, 0, 17));
         }
         return $this->true_name;
