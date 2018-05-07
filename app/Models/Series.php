@@ -22,4 +22,9 @@ class Series extends Model
         //return $this->belongsToMany('App\Models\Category', 'mapping_series_category', 'serid', 'catid');
     }
 
+    public function models(){
+        return $this->belongsToMany('App\Models\ModelNumber', 'series_modelnumber', 'serid', 'modelid');
+
+    }
+
 }

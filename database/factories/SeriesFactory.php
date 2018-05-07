@@ -8,7 +8,7 @@ $factory->define(Series::class, function (Faker $faker) {
         "name" => $faker->words(2, true),
         "parentid" => 0,
         "brandid" => function(){
-            return Brand::first()->brandid;
+            return Brand::all()->random()->brandid;
         },
         "content" => $faker->realText(),
     ];

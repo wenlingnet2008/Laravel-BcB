@@ -12,9 +12,13 @@ class SeriesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Series::class)->times(10)->make()->each(function ($series){
 
+        factory(Series::class)->times(10)->make()->each(function ($series){
+            $category = \App\Models\Category::all()->random();
+            $brand = \App\Models\Brand::find($series->brandid);
             $series->saveCategory();
+            $series->categories()->save($category);
+            $brand->categories()->save($category);
         });
     }
 }

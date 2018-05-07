@@ -6,7 +6,7 @@ $factory->define(\App\Models\DefaultPara::class, function (Faker $faker) {
     return [
         "para" => $faker->words(2, true),
         "catid" => function(){
-            return \App\Models\Category::all()->random();
+            return \App\Models\Category::all()->random()->catid;
         }
     ];
 });

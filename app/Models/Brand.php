@@ -13,6 +13,10 @@ class Brand extends Model
         return $this->hasMany('App\Models\Series', 'brandid', 'brandid');
     }
 
+    public function models(){
+        return $this->hasMany('App\Models\ModelNumber', 'brandid', 'brandid');
+    }
+
     public function categories(){
         return $this->morphToMany('App\Models\Category', 'categoryable', 'categoryables', null, 'catid');
         //return $this->belongsToMany('App\Category', 'mapping_brand_category', 'brandid', 'catid');

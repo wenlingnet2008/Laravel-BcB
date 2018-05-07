@@ -12,6 +12,6 @@ class DefaultParaValuesTableSeeder extends Seeder
     public function run()
     {
         $values = factory(\App\Models\DefaultParaValue::class, 10)->make();
-        dd($values->toArray());
+        //dd($values->toArray());
     }
 }
