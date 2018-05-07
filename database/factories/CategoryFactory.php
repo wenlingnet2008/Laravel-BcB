@@ -12,18 +12,18 @@ $factory->define(Category::class, function (Faker $faker) {
 
 $factory->state(Category::class, 'one', function (Faker $faker){
    return [
-       'parentid' => 0,
+       'parent_id' => null,
    ];
 });
 
 $factory->state(Category::class, 'two', function (Faker $faker){
     return [
-        'parentid' => $faker->numberBetween(1, 10),
+        'parent_id' => $faker->numberBetween(1, 10),
     ];
 });
 
 $factory->state(Category::class, 'three', function (Faker $faker){
     return [
-        'parentid' => $faker->numberBetween(11, 20),
+        'parent_id' => $faker->numberBetween(11, 20),
     ];
 });

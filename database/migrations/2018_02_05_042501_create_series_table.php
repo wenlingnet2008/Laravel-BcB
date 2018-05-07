@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Kalnoy\Nestedset\NestedSet;
 
 class CreateSeriesTable extends Migration
 {
@@ -17,10 +18,7 @@ class CreateSeriesTable extends Migration
             $table->increments('serid');
             $table->integer('brandid')->unsigned();
             $table->string('name', 50);
-            $table->integer('parentid')->index()->default(0);
-            $table->string('arrparentid')->default('');
-            $table->boolean("child")->default(0);
-            $table->text('arrchildid');
+            NestedSet::columns($table);
             $table->text('content')->nullable();
             $table->string('linkurl')->default('');
             $table->char('letter', 1);

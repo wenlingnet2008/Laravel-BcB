@@ -4,11 +4,11 @@ namespace App\Models;
 
 use App\Traits\BaseCategoryTrait;
 use Illuminate\Database\Eloquent\Model;
-use Mockery\Exception;
+use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
 {
-    use BaseCategoryTrait;
+    use NodeTrait;
 
     protected $primaryKey = 'catid';
     public $timestamps = false;
@@ -33,5 +33,11 @@ class Category extends Model
         //return $this->belongsToMany('App\Models\Series', 'mapping_series_category', 'catid', 'serid');
     }
 
+
+    public function saveCategory(){
+        $this->linkurl = str_slug($this->name);
+        $this->letter = ucfirst(substr($this->name, 0, 1));
+        $this->save();
+    }
 
 }
