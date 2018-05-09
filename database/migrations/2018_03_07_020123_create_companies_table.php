@@ -15,7 +15,7 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->unsignedInteger('userid')->primary();
-            $table->string('company', 150)->unique()->comment('公司名称');
+            $table->string('name', 150)->unique()->comment('公司名称');
             $table->string('mode', 100)->default('')->comment('经营类型');
             $table->float('capital')->default(0)->comment('注册资金');
             $table->string('regunit', 15)->default('');

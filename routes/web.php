@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'MainController@index');
+Route::get('/', 'MainController@index')->name('main.index');
 
 Route::resource('categories', 'CategoryController',[
     'parameters' => [
