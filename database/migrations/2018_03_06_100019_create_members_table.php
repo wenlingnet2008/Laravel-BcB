@@ -26,6 +26,7 @@ class CreateMembersTable extends Migration
             $table->string('career', 100)->default('')->comment('职位');
             $table->string('regip', 30)->default('');
             $table->string('auth', 255)->default('');
+            $table->boolean('is_admin')->default(0);
             $table->timestamp('auth_expired_time')->nullable();
             $table->boolean('vmail')->default(0)->comment('邮箱是否验证');
             $table->boolean('vcompany')->default(0)->comment('公司是否验证');

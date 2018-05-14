@@ -11,6 +11,20 @@
 |
 */
 
+Route::get('admin', 'Admin\LoginController@index')->name('admin.login.index');
+Route::get('admin/login', 'Admin\LoginController@show')->name('admin.login.show');
+Route::post('admin/checklogin', 'Admin\LoginController@login')->name('admin.login');
+
+Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
+    Route::get('dashboard', 'DashboardController@index')->name('dash.index');
+    Route::resource('brands', 'BrandController',[
+        'parameters' => ['brands'=> 'brandid'],
+    ]);
+    Route::get('admin/logout', 'LoginController@logout')->name('logout');
+});
+
+
+
 Route::get('/', 'MainController@index')->name('main.index');
 
 Route::resource('categories', 'CategoryController',[

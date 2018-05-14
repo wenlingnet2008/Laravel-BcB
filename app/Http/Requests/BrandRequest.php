@@ -27,14 +27,14 @@ class BrandRequest extends FormRequest
         switch ($this->method()) {
             case 'POST': {
                 return [
-                    'brand_name' => ['required', 'max:50', Rule::unique('brands', 'brand_name')],
+                    'name' => ['required', 'max:50', Rule::unique('brands', 'name')],
                     'thumb' => ['required', 'image', 'max:2048'],
                 ];
             }
             case 'PUT': {
                 $brand = $this->route('brandid');
                 return [
-                    'brand_name' => ['required', 'max:50', Rule::unique('brands', 'brand_name')->ignore($brand->brandid, 'brandid')],
+                    'name' => ['required', 'max:50', Rule::unique('brands', 'name')->ignore($brand->brandid, 'brandid')],
                     'thumb' => ['sometimes', 'image', 'max:2048'],
                 ];
             }
