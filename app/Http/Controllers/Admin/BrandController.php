@@ -9,6 +9,14 @@ use App\Http\Controllers\Controller;
 
 class BrandController extends Controller
 {
+    protected $searchurl;
+
+    public function __construct()
+    {
+        $this->middleware('auth.admin');
+        $this->searchurl = route('admin.brands.search');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,6 +27,7 @@ class BrandController extends Controller
         $brands = Brand::paginate(10);
         $data['brands'] = $brands;
         $data['title'] = '品牌列表';
+        $data['searchurl'] = $this->searchurl;
         return view('admin.brand.list', $data);
     }
 
@@ -30,6 +39,7 @@ class BrandController extends Controller
     public function create()
     {
         $data['title'] = '添加品牌';
+        $data['searchurl'] = $this->searchurl;
        return view('admin.brand.add', $data);
     }
 
@@ -74,6 +84,7 @@ class BrandController extends Controller
         $data['brand'] = $brand;
 
         $data['title'] = '修改品牌';
+        $data['searchurl'] = $this->searchurl;
         return view('admin.brand.edit', $data);
     }
 
@@ -117,5 +128,18 @@ class BrandController extends Controller
      */
     protected function uploadThumb(Request $request){
         return json_encode(['thumb1'=> $request->file('thumb')->store('brands', 'upload')]);
+    }
+
+
+    public function search(Request $request){
+        $q = $request->input('q');
+
+        $brands = Brand::where('name', 'like', "%{$q}%")->paginate(10);
+        $data['brands'] = $brands;
+        $data['searchurl'] = $this->searchurl;
+        $data['title'] = '搜索列表';
+        $data['q'] = $q;
+
+        return view('admin.brand.list', $data);
     }
 }

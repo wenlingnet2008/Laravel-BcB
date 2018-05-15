@@ -18,6 +18,14 @@ class CategoryRequest extends FormRequest
         return true;
     }
 
+    public function withValidator($validator)
+    {
+        $validator->sometimes('parent_id', Rule::exists('categories', 'catid'), function($input)
+        {
+            return $input->parent_id > 0;
+        });
+    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -29,17 +37,18 @@ class CategoryRequest extends FormRequest
         switch ($this->method()) {
             case 'POST': {
                 return [
-                    'catname' => ['required', 'max:50', Rule::unique('categories', 'catname')],
-                    'parentid' => ['required', 'numeric', Rule::exists('categories', 'catid')],
+                    'name' => ['required', 'max:50', Rule::unique('categories', 'name')],
+                    'parent_id' => ['sometimes', 'numeric'],
                 ];
             }
             case 'PUT': {
                 $category = $this->route('catid');
 
                 return [
-                    'catname' => ['required', 'max:50', Rule::unique('categories', 'catname')->ignore($category->catid, 'catid')],
-                    'parentid' => ['required', 'numeric', Rule::notIn(array_merge(explode(',', $category->arrchildid),[$this->route('catid')]))],
+                    'name' => ['required', 'max:50', Rule::unique('categories', 'name')->ignore($category->catid, 'catid')],
+                    'parent_id' => ['sometimes', 'numeric', Rule::notIn(Category::descendantsAndSelf($category->catid)->pluck('catid')->toArray())],
                 ];
+
             }
             case 'PATCH':
             case 'GET':
@@ -54,7 +63,16 @@ class CategoryRequest extends FormRequest
     public function messages()
     {
         return [
-            'parentid.not_in'  => 'Parent Category can not be for themselves or sub category',
+            'parent_id.not_in'  => '父类不能是它自己或者它的子类',
         ];
+    }
+
+
+    public function attributes()
+    {
+       return [
+         'name' => '分类名称',
+         'parent_id' => '主分类'
+       ];
     }
 }

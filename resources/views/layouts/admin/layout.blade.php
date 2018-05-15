@@ -66,8 +66,8 @@
                 <!-- /.Task dropdown -->
                 <!-- /.dropdown -->
                 <li>
-                    <form role="search" class="app-search hidden-sm hidden-xs m-r-10">
-                        <input type="text" placeholder="Search..." class="form-control"> <a href=""><i class="fa fa-search"></i></a> </form>
+                    <form role="search" class="app-search hidden-sm hidden-xs m-r-10" method="get" action="@isset($searchurl){{ $searchurl }}@endisset">
+                        <input type="text" placeholder="Search..." class="form-control" name="q" value="@isset($q){{$q}}@endisset"> <a onclick="$('.app-search').submit();"><i class="fa fa-search"></i></a> </form>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#"> <img src="/static/plugins/images/users/varun.jpg" alt="user-img" width="36" class="img-circle"><b class="hidden-xs">{{ Auth::user()['name'] }}</b><span class="caret"></span> </a>
@@ -85,7 +85,7 @@
                         <li role="separator" class="divider"></li>
                         <li><a href=" url_for('user.change_password') "><i class="ti-settings"></i> Account Setting</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="url_for('auth.logout') "><i class="fa fa-power-off"></i> Logout</a></li>
+                        <li><a href="{{ route('admin.logout') }} "><i class="fa fa-power-off"></i> Logout</a></li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -128,10 +128,10 @@
                         <li> <a href="{{ route('admin.brands.index') }}" ><i class="fa-fw"></i><span class="hide-menu">品牌列表</span></a> </li>
                     </ul>
                 </li>
-                <li> <a href="javascript:void(0)" class="waves-effect"><i class="linea-icon linea-basic fa-fw icon-folder-alt"></i><span class="hide-menu">Attributes<span class="fa arrow"></span></span></a>
+                <li> <a href="javascript:void(0)" class="waves-effect"><i class="linea-icon linea-basic fa-fw icon-folder-alt"></i><span class="hide-menu">分类管理<span class="fa arrow"></span></span></a>
                     <ul class="nav nav-second-level">
-                        <li> <a href=" url_for('user.add_category') " ><i class="fa-fw">A</i><span class="hide-menu">Add Category</span></a> </li>
-                        <li> <a href=" url_for('user.manage_category') " ><i class="fa-fw">M</i><span class="hide-menu">Manage Category</span></a> </li>
+                        <li> <a href=" {{ route('admin.categories.create') }} " ><i class="fa-fw"></i><span class="hide-menu">添加分类</span></a> </li>
+                        <li> <a href=" {{ route('admin.categories.list') }} " ><i class="fa-fw"></i><span class="hide-menu">分类管理</span></a> </li>
                     </ul>
                 </li>
             </ul>

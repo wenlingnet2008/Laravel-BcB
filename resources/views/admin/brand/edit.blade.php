@@ -30,23 +30,7 @@
                 <div class="col-md-12 col-lg-12">
                     <div class="white-box">
                         <h3 class="box-title m-b-0">{{ $title }}</h3>
-                        @if(session('status'))
-                            <div class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-success m-t-40">
-                                <span id="return-message">{{ session('status') }}</span>
-                                <a href="#" class="closed">×</a>
-                            </div>
-                        @endif
-
-                        @if(count($errors) > 0)
-                            <div class="myadmin-alert myadmin-alert-icon myadmin-alert-click alert-danger m-t-40">
-                                <span id="return-message">
-                                    @foreach($errors->all() as $error)
-                                        {{ $error }} <br/>
-                                    @endforeach
-                                </span>
-                                <a href="#" class="closed">×</a>
-                            </div>
-                        @endif
+                        @include('admin.flash_error_or_success')
                         <p class="text-muted m-b-30 font-13">  </p>
                         <div class="row">
                             <div class="col-sm-12 col-xs-12">

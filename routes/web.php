@@ -17,10 +17,21 @@ Route::post('admin/checklogin', 'Admin\LoginController@login')->name('admin.logi
 
 Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
     Route::get('dashboard', 'DashboardController@index')->name('dash.index');
+    Route::get('logout', 'LoginController@logout')->name('logout');
+    Route::get('categories/subcategory', 'CategoryController@subcategory')->name('categories.subcategory');
+    Route::get('categories/list/{catid?}', 'CategoryController@clist')->name('categories.list');
+    Route::get('categories/search', 'CategoryController@search')->name('categories.search');
+
+
+    Route::get('brands/search', 'BrandController@search')->name('brands.search');
     Route::resource('brands', 'BrandController',[
         'parameters' => ['brands'=> 'brandid'],
     ]);
-    Route::get('admin/logout', 'LoginController@logout')->name('logout');
+
+    Route::resource('categories', 'CategoryController',[
+        'parameters' => ['categories'=> 'catid'],
+    ]);
+
 });
 
 
