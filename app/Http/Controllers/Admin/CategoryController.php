@@ -6,16 +6,16 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 
 class CategoryController extends Controller
 {
 
-    protected $searchurl;
 
     public function __construct()
     {
         $this->middleware('auth.admin');
-        $this->searchurl = route('admin.categories.search');
+        App::setLocale('zh_cn');
     }
 
     /**
@@ -28,19 +28,38 @@ class CategoryController extends Controller
 
     }
 
-    public function clist(Category $category = null){
+    public function clist(Category $category = null, Request $request){
+        if($request->method() == 'POST'){
+            $this->validate($request, [
+                'catids' => 'required|array',
+                'catids.*' => 'required|integer',
+                'category.*.list_order' => 'required|integer',
+                'category.*.name' => ['required', 'max:50', 'unique:categories,name,*,catid'],
+            ]);
+
+            $catids = $request->input('catids');
+            $update_categories = $request->input('category');
+
+            foreach($catids as $catid){
+                $cat = Category::find($catid);
+                $cat->name = $update_categories[$catid]['name'];
+                $cat->list_order = $update_categories[$catid]['list_order'];
+                $cat->saveCategory();
+            }
+
+            return back()->with(['status' => '更新成功']);
+        }
         if(is_null($category)){
-            $categories = Category::where('parent_id', null)->paginate(10);
+            $categories = Category::withCount('descendants')->where('parent_id', null)->get();
             $bread_nav = [];
         }else{
-            $categories = $category->children()->paginate(10);
+            $categories = $category->children()->withCount('descendants')->get();
             $bread_nav = $category->ancestors->push($category);
         }
 
+        $data['total'] = Category::count();
         $data['bread_nav'] = $bread_nav;
         $data['categories'] = $categories;
-        $data['title'] = '分类列表';
-        $data['searchurl'] = $this->searchurl;
 
         return view('admin.category.list', $data);
     }
@@ -159,15 +178,15 @@ class CategoryController extends Controller
 
 
     public function search(Request $request){
+        $this->validate($request, ['q'=>'required']);
 
         $q = $request->input('q');
 
-        $categories = Category::where('name', 'like', "%{$q}%")->paginate(10);
+        $categories = Category::where('name', 'like', "%{$q}%")->get();
         $data['categories'] = $categories;
         $data['bread_nav'] = [];
-        $data['searchurl'] = $this->searchurl;
-        $data['title'] = '搜索列表';
-        $data['q'] = $q;
+        $data['total'] = Category::count();
+
 
         return view('admin.category.list', $data);
     }

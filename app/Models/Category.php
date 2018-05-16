@@ -36,7 +36,7 @@ class Category extends Model
 
     public function saveCategory(){
         $this->linkurl = str_slug($this->name);
-        $this->letter = ucfirst(substr($this->name, 0, 1));
+        $this->letter = ucfirst(mb_substr($this->name, 0, 1));
         $this->save();
     }
 

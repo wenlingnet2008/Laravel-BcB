@@ -1,100 +1,87 @@
-@extends('layouts.admin.layout')
-
-@section('title'){{ $title }}@endsection
-
-@section('header')
-    @parent
-    <link rel="stylesheet" href="{{ asset('/static/plugins/bower_components/dropify/dist/css/dropify.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/static/plugins/bower_components/html5-editor/bootstrap-wysihtml5.css') }}" />
-
+@extends('layouts.admin.header')
+@section('menu')
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td id="Tab0" class="tab"><a href="?file=category&action=add&mid=5&parentid=0" >添加分类</a></td>
+            <td id="Tab1" class="tab"><a href="{{ route('admin.categories.list') }}" >管理分类</a></td>
+            <td id="Tab2" class="tab"><a href="?file=category&action=copy&mid=5" >分类复制</a></td>
+            <td id="Tab3" class="tab"><a href="?file=category&action=caches&mid=5" >更新缓存</a></td></tr>
+    </table>
 @stop
-
 
 @section('content')
-    <div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row bg-title">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                    <h4 class="page-title">分类管理</h4></div>
-                <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    @include('admin.flash_error_or_success')
+<div class="sbox">
+    <form action="{{ route('admin.categories.search') }}">
 
-                    <ol class="breadcrumb">
-                        <li><a href="{{ route('admin.dash.index') }}">控制台</a></li>
-                        <li><a href="{{ route('admin.categories.list') }}">分类</a></li>
-                        @foreach($bread_nav as $category)
-                            <li><a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}">{{ $category['name'] }}</a></li>
-                        @endforeach
-                    </ol>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
+        <input type="text" size="30" name="q" value="@isset($q){{ $q }}@endisset" placeholder="请输入关键词" title="请输入关键词"/>&nbsp;
+        <input type="submit" name="submit" value="搜 索" class="btn"/>&nbsp;
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel">
-                        <div class="panel-heading">分类列表</div>
-                        <div class="table-responsive">
-                            <table class="table table-hover manage-u-table">
-                                <thead>
-                                <tr>
+    </form>
+</div>
+<form method="post">
+    {{csrf_field()}}
+    @if(request()->route('catid'))
+    <div class="tt">
+        <a href="{{ route('admin.categories.list') }}">分类</a> >
+        @foreach($bread_nav as $category)
+            <a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}" @if ($loop->last)class="t" @endif >{{ $category['name'] }}</a> @if ($loop->last) @else > @endif
+        @endforeach
 
-                                    <th>分类名称</th>
 
-                                    <th width="300">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($categories as $category)
-                                    <tr>
-
-                                        <td><span class="text-muted">{{ $category['name'] }}</span></td>
-
-                                        <td>
-                                            <a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}" title="查看下级分类"><button type="button" class="btn btn-info btn-outline btn-circle btn-lg m-r-5"><i class="icon-folder-alt"></i></button></a>
-                                            <a href="{{ route('admin.categories.edit', ['catid'=> $category['catid']]) }}" title="修改分类"><button type="button" class="btn btn-info btn-outline btn-circle btn-lg m-r-5"><i class="ti-key"></i></button></a>
-                                            <a href="#" onclick="delete_category({{ $category['catid'] }})" title="删除分类"> <button type="button" class="btn btn-info btn-outline btn-circle btn-lg m-r-5"><i class="ti-trash"></i></button></a>
-
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                            <div style="float:right">
-                                 {{ $categories->links() }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        @section('footer')
-            @parent
-        @stop
     </div>
+    @endif
+    <table cellspacing="0" class="tb ls">
+        <tr>
+            <th width="20"><input type="checkbox" onclick="checkall(this.form);"/></th>
+            <th>排序</th>
+            <th>分类名</th>
+            <th>信息量</th>
+            <th>子类</th>
+            <th>属性</th>
+            <th width="100">操作</th>
+        </tr>
+        @foreach($categories as $k => $category)
+        <tr align="center">
+            <td><input type="checkbox" name="catids[]" value="{{$category->catid}}"/></td>
+            <td><input name="category[{{ $category->catid }}][list_order]" type="text" size="3" value="{{$category->list_order}}"/></td>
+            <td>
+                <input name="category[{{ $category->catid }}][name]" type="text" value="{{ $category->name }}" style="width:200px;color:"/>
+            </td>
+            <td>0</td>
+            <td title="管理子分类"><a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}">{{ $category->descendants_count }}</a></td>
+            <td title="管理属性"><a href="javascript:Dwidget('?file=property&catid=1', '[分类名称]扩展属性');">0</a></td>
+            <td>
+                <a href="?file=category&action=add&mid=5&parentid=1"><img src="/admin/image/add.png" width="16" height="16" title="添加子分类" alt=""/></a>&nbsp;
+                <a href="?file=category&action=edit&mid=5&catid=1"><img src="/admin/image/edit.png" width="16" height="16" title="修改" alt=""/></a>&nbsp;
+                <a href="?file=category&action=delete&mid=5&catid=1&parentid=0" onclick="return _delete();"><img src="/admin/image/delete.png" width="16" height="16" title="删除" alt=""/></a></td>
+        </tr>
+        @endforeach
+    </table>
+    <div class="btns">
+<span class="f_r">
+分类总数:<strong class="f_red">{{ $total }}</strong>&nbsp;&nbsp;
+当前目录:<strong class="f_blue">{{ $categories->count() }}</strong>&nbsp;&nbsp;
+</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="submit" name="submit" value="更新分类" class="btn-g" onclick="this.form.action='{{ route('admin.categories.list') }}'"/>&nbsp;&nbsp;
+        <input type="submit" value="删除选中" class="btn-r" onclick="if(confirm('确定要删除选中分类吗？此操作将不可撤销')){this.form.action='?mid=5&file=category&parentid=0&action=delete'}else{return false;}"/>&nbsp;&nbsp;
+    </div>
+</form>
 
+<div class="tt">注意事项</div>
+<table cellspacing="0" class="tb">
+    <tr>
+        <td class="lh20">&nbsp;&nbsp;
+            &nbsp;&nbsp;<span class="f_red">删除分类</span>会将该分类下的所有分类删除，没有特殊情况不建议直接删除分类<br/>
 
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    function Prop(t, n) {
+        mkDialog('', '<iframe src="?file=property&catid='+n+'" width="700" height=300" border="0" vspace="0" hspace="0" marginwidth="0" marginheight="0" framespacing="0" frameborder="0" scrolling="yes"></iframe>', '['+t+']扩展属性', 720, 0, 0);
+    }
+</script>
+<script type="text/javascript">Menuon(1);</script>
 @stop
-
-
-@section('scripts')
-    @parent
-    <script>
-        function delete_category(catid) {
-            var r=confirm("注意：删除此分类将会连它的子类也删除,确定要删除吗?");
-            if (r==true)
-            {
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('admin/categories') }}/"+ catid,
-                    data: "_token={{ csrf_token() }}",
-                    success: function(msg){
-                        alert( msg.message );
-                        location.reload();
-                    }
-                });
-            }
-
-        }
-    </script>
-@endsection

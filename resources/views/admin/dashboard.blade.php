@@ -1,120 +1,76 @@
-@extends('layouts.admin.layout')
+@extends('layouts.admin.header')
 
-@section('title'){{ $title }}@endsection
-
+@section('menu')
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td id="Tab0" class="tab"><a href="{{ route('admin.dash.main') }}" >系统首页</a></td>
+            <td id="Tab1" class="tab"><a href="{{ route('admin.dash.password') }}" >修改密码</a></td>
+            <td id="Tab2" class="tab"><a href="javascript:Dconfirm('确定要退出管理后台吗?', '{{ route('admin.logout') }}');" >安全退出</a></td></tr>
+    </table>
+@stop
 
 @section('content')
-    <!-- ============================================================== -->
-    <!-- End Left Sidebar -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Page Content -->
-    <!-- ============================================================== -->
-    <div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row bg-title">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                    <h4 class="page-title">首页</h4></div>
-                <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 
-                    <ol class="breadcrumb">
-                        <li><a href="#">控制台</a></li>
-                        <li class="active">首页</li>
-                    </ol>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
+    <style type="text/css">
+        #todo {display:none;width:100%;border-bottom:#E7E7EB 1px solid;padding-bottom:10px;}
+        #todo ul {margin-top:10px;}
+        #todo li {float:left;width:180px;line-height:32px;padding:0 16px;}
+        #todo li b {color:red;padding:0 2px;font-size:12px;}
+    </style>
 
+    <div class="tt"><span class="f_r px12" style="font-weight:normal;"></span>欢迎管理员，{{ $user->name }}</div>
+    <!--<table cellspacing="0" class="tb">
+        <tr>
+            <td class="tl">管理级别</td>
+            <td width="30%">&nbsp;网站创始人</td>
+            <td class="tl">登录次数</td>
+            <td width="30%">&nbsp;6 次</td>
+        </tr>
+        <tr>
+            <td class="tl">站内信件</td>
+            <td>&nbsp;<a href="http://192.168.0.38/member/message.php" target="_blank">收件箱(0)</a></td>
+            <td class="tl">登录时间</td>
+            <td>&nbsp;2018-05-16 14:34 </td>
+        </tr>
+        <tr>
+            <td class="tl">账户余额</td>
+            <td>&nbsp;0.00</td>
+            <td class="tl">会员积分</td>
+            <td>&nbsp;0 </td>
+        </tr>
 
-            <div class="row">
-                <!-- col-md-9 -->
-                <div class="col-md-12 col-lg-12">
-                    <div class="manage-users">
-                        <div class="sttabs tabs-style-iconbox">
-                            <nav>
-                                <ul>
-                                    <li><a href="#section-iconbox-1" class="sticon ti-user"><span>管理信息</span></a></li>
-                                    <li><a href="#section-iconbox-2" class="sticon ti-lock"><span>系统信息</span></a></li>
+    </table>
+    -->
+    <div id="todo"></div>
+    <div id="destoon"></div>
+    <div class="tt">系统信息 </div>
+    <table cellspacing="0" class="tb">
+        <tr><td>站点名称</td><td>
+            {{ config('site.name') }}</td></tr>
+        <tr><td>站点URL</td><td>
+                {{ config('site.url') }}</td></tr>
+        <tr><td>程序版本</td><td>
+                {{ config('site.version') }}</td></tr>
+        <tr><td>服务器</td><td>
+                {{ $sysinfo['server'] }}</td></tr>
+        <tr><td>内存</td><td>
+                {{ $sysinfo['memory'] }}</td></tr>
+        <tr><td>Laravel 版本</td><td>
+                {{ $sysinfo['laraver'] }} <a href="https://www.laravel.com" target="_blank"> Laravel框架 </a></td></tr>
+        <tr><td>服务器时间</td><td>
+                {{ $sysinfo['timezone'] }}</td></tr>
 
-                                </ul>
-                            </nav>
-                            <div class="content-wrap">
-                                <section id="section-iconbox-1">
-                                    <div class="p-20 row">
-                                        <div class="col-sm-6">
-                                            <h3 class="m-t-0">Welcome {{ $user['name'] }}</h3></div>
+        <tr><td>最大上传文件</td><td>
+                {{ $sysinfo['upload_max_filesize'] }}</td></tr>
+        <tr><td>Mysql 版本</td><td>
+                {{ $sysinfo['mysql'] }}</td></tr>
+        <tr><td>PHP 版本</td><td>
+                {{ $sysinfo['php'] }}</td></tr>
+        <tr><td>服务器IP</td><td>
+                {{ $sysinfo['ip'] }}</td></tr>
 
-                                    </div>
+    </table>
 
-                                </section>
-                                <section id="section-iconbox-2">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="white-box">
+    <script type="text/javascript">Menuon(0);</script>
 
-                                                <p class="text-muted m-b-20">站点的信息配置文件在 config/site.php 里面修改</p>
-                                                <div class="table-responsive">
-                                                    <table class="table table-striped">
-
-                                                        <tbody>
-                                                        <tr><td>站点名称</td><td>
-                                                                {{ config('site.name') }}</td></tr>
-                                                        <tr><td>站点URL</td><td>
-                                                                {{ config('site.url') }}</td></tr>
-                                                        <tr><td>服务器</td><td>
-                                                                {{ $sysinfo['server'] }}</td></tr>
-                                                        <tr><td>内存</td><td>
-                                                                {{ $sysinfo['memory'] }}</td></tr>
-                                                        <tr><td>Laravel 版本</td><td>
-                                                                {{ $sysinfo['laraver'] }}</td></tr>
-                                                        <tr><td>服务器时间</td><td>
-                                                                {{ $sysinfo['timezone'] }}</td></tr>
-
-                                                        <tr><td>最大上传文件</td><td>
-                                                                {{ $sysinfo['upload_max_filesize'] }}</td></tr>
-                                                        <tr><td>Mysql 版本</td><td>
-                                                                {{ $sysinfo['mysql'] }}</td></tr>
-                                                        <tr><td>PHP 版本</td><td>
-                                                                {{ $sysinfo['php'] }}</td></tr>
-                                                        <tr><td>服务器IP</td><td>
-                                                                {{ $sysinfo['ip'] }}</td></tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </section>
-
-                            </div>
-                            <!-- /content -->
-                        </div>
-                        <!-- /tabs -->
-                    </div>
-                </div>
-                <!-- /col-md-9 -->
-            </div>
-
-        </div>
-        @section('footer')
-            @parent
-        @endsection
-    </div>
-
-
-
-@endsection
-
-
-@section('scripts')
-    @parent
-    <!-- Custom tab JavaScript -->
-    <script src="{{ asset('/static/js/cbpFWTabs.js') }}"></script>
-    <script type="text/javascript">
-        (function () {
-            [].slice.call(document.querySelectorAll('.sttabs')).forEach(function (el) {
-                new CBPFWTabs(el);
-            });
-        })();
-    </script>
 @endsection

@@ -17,11 +17,17 @@ Route::post('admin/checklogin', 'Admin\LoginController@login')->name('admin.logi
 
 Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
     Route::get('dashboard', 'DashboardController@index')->name('dash.index');
+    Route::get('main', 'DashboardController@main')->name('dash.main');
+    Route::get('password', 'DashboardController@password')->name('dash.password');
+    Route::post('change_password', 'DashboardController@changePassword')->name('dash.changepassword');
+
     Route::get('logout', 'LoginController@logout')->name('logout');
+
     Route::get('categories/subcategory', 'CategoryController@subcategory')->name('categories.subcategory');
-    Route::get('categories/list/{catid?}', 'CategoryController@clist')->name('categories.list');
+    Route::any('categories/list/{catid?}', 'CategoryController@clist')->name('categories.list');
     Route::get('categories/search', 'CategoryController@search')->name('categories.search');
 
+    Route::get('left', function(){ return view('layouts.admin.left');})->name('left');
 
     Route::get('brands/search', 'BrandController@search')->name('brands.search');
     Route::resource('brands', 'BrandController',[

@@ -18,6 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->increments('catid');
             $table->string('name',50)->unique()->comment('分类名称');
             $table->char('letter', 1)->index();
+            $table->smallInteger('list_order')->default(0)->comment('排序');
             NestedSet::columns($table);
             $table->string('linkurl')->default('');
         });
