@@ -50,10 +50,10 @@ class CategoryController extends Controller
             return back()->with(['status' => '更新成功']);
         }
         if(is_null($category)){
-            $categories = Category::withCount('descendants')->where('parent_id', null)->get();
+            $categories = Category::withCount('descendants')->where('parent_id', null)->orderBy('list_order', 'asc')->get();
             $bread_nav = [];
         }else{
-            $categories = $category->children()->withCount('descendants')->get();
+            $categories = $category->children()->withCount('descendants')->orderBy('list_order', 'asc')->get();
             $bread_nav = $category->ancestors->push($category);
         }
 
@@ -71,15 +71,16 @@ class CategoryController extends Controller
      */
     public function create()
     {
-
+        if(\request()->filled('catid')){
+            $catid = intval(\request()->input('catid'));
+            $data['parent_ids'] = Category::ancestorsAndSelf($catid)->pluck('catid');
+        }
 
         $top_categories = Category::withDepth()->having('depth', '=', 0)->get();
         $data['top_categories'] = [];
         foreach($top_categories as $category){
             $data['top_categories'][$category->catid] = ['name'=> $category->name];
         }
-        $data['title'] = '添加分类';
-        $data['searchurl'] = $this->searchurl;
 
         return view('admin.category.add', $data);
     }
@@ -92,10 +93,21 @@ class CategoryController extends Controller
      */
     public function store(CategoryRequest $request)
     {
-        $category = new Category();
-        $category->name = $request->input('name');
-        $category->parent_id = $request->input('parent_id');
-        $category->saveCategory();
+
+        if(is_array($request->input('name'))){
+            foreach($request->input('name') as $name){
+                $category = new Category();
+                $category->name = $name;
+                $category->parent_id = $request->input('parent_id');
+                $category->saveCategory();
+            }
+        }else{
+            $category = new Category();
+            $category->name = $request->input('name');
+            $category->parent_id = $request->input('parent_id');
+            $category->saveCategory();
+        }
+
 
         return redirect()->route('admin.categories.create')->with(['status' => '添加成功']);
     }
@@ -122,8 +134,6 @@ class CategoryController extends Controller
         $category->parent_ids = $category->ancestors()->pluck('catid');
         $data['category'] = $category;
 
-        $data['title'] = '修改分类';
-        $data['searchurl'] = $this->searchurl;
 
         return view('admin.category.edit', $data);
     }
@@ -139,7 +149,6 @@ class CategoryController extends Controller
     {
         $category->name = $request->input('name');
         $category->parent_id = $request->input('parent_id');
-        var_dump($request->all());
         $category->saveCategory();
         return redirect()->route('admin.categories.edit', ['catid'=>$category->catid])->with(['status' => '更新成功']);
     }
@@ -182,12 +191,23 @@ class CategoryController extends Controller
 
         $q = $request->input('q');
 
-        $categories = Category::where('name', 'like', "%{$q}%")->get();
+        $categories = Category::where('name', 'like', "%{$q}%")->withCount('descendants')->get();
         $data['categories'] = $categories;
         $data['bread_nav'] = [];
         $data['total'] = Category::count();
 
 
         return view('admin.category.list', $data);
+    }
+
+
+    public function fixTree(){
+        if(Category::isBroken()){
+            Category::fixTree();
+            return view('layouts.admin.error_notice')->with('status','修复完成');
+        }else{
+            return view('layouts.admin.error_notice')->with('status','没有错误, 不需要修复');
+        }
+
     }
 }

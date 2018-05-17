@@ -1,4 +1,4 @@
-@extends('layouts.admin.header')
+@extends('layouts.admin.layout')
 
 @section('menu')
     <table cellpadding="0" cellspacing="0">

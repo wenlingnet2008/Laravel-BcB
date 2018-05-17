@@ -38,6 +38,9 @@ class Category extends Model
         $this->linkurl = str_slug($this->name);
         $this->letter = ucfirst(mb_substr($this->name, 0, 1));
         $this->save();
+
+        $this->list_order = $this->catid;
+        $this->save();
     }
 
 }

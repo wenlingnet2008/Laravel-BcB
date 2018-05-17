@@ -6,6 +6,7 @@ use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 
 class BrandController extends Controller
 {
@@ -14,7 +15,7 @@ class BrandController extends Controller
     public function __construct()
     {
         $this->middleware('auth.admin');
-        $this->searchurl = route('admin.brands.search');
+        App::setLocale('zh_cn');
     }
 
     /**
@@ -26,8 +27,6 @@ class BrandController extends Controller
     {
         $brands = Brand::paginate(10);
         $data['brands'] = $brands;
-        $data['title'] = '品牌列表';
-        $data['searchurl'] = $this->searchurl;
         return view('admin.brand.list', $data);
     }
 
@@ -39,7 +38,6 @@ class BrandController extends Controller
     public function create()
     {
         $data['title'] = '添加品牌';
-        $data['searchurl'] = $this->searchurl;
        return view('admin.brand.add', $data);
     }
 
@@ -84,7 +82,6 @@ class BrandController extends Controller
         $data['brand'] = $brand;
 
         $data['title'] = '修改品牌';
-        $data['searchurl'] = $this->searchurl;
         return view('admin.brand.edit', $data);
     }
 
@@ -126,17 +123,17 @@ class BrandController extends Controller
      * @param Request $request
      * @return string
      */
-    protected function uploadThumb(Request $request){
-        return json_encode(['thumb1'=> $request->file('thumb')->store('brands', 'upload')]);
+    protected function uploadThumb(BrandRequest $request){
+        return json_encode(['thumb1'=> '/storage/'.$request->file('thumb')->store('brands', 'upload')]);
     }
 
 
     public function search(Request $request){
+        $this->validate($request, ['q'=>'required']);
         $q = $request->input('q');
 
         $brands = Brand::where('name', 'like', "%{$q}%")->paginate(10);
         $data['brands'] = $brands;
-        $data['searchurl'] = $this->searchurl;
         $data['title'] = '搜索列表';
         $data['q'] = $q;
 

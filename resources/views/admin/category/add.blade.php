@@ -1,105 +1,66 @@
 @extends('layouts.admin.layout')
 
-@section('title'){{ $title }}@endsection
-
-@section('header')
-    @parent
-
+@section('menu')
+    <table cellpadding="0" cellspacing="0">
+        <tr>
+            <td id="Tab0" class="tab"><a href="{{ route('admin.categories.create') }}" >添加分类</a></td>
+            <td id="Tab1" class="tab"><a href="{{ route('admin.categories.list') }}" >管理分类</a></td>
+            <td id="Tab2" class="tab"><a href="{{ route('admin.categories.fixtree') }}" >修复分类</a></td></tr>
+    </table>
 @stop
-
 
 @section('content')
-    <div id="page-wrapper">
-        <div class="container-fluid">
-            <div class="row bg-title">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                    <h4 class="page-title">分类管理</h4></div>
-                <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+    @include('admin.flash_error_or_success')
+    <form method="post" action="{{ route('admin.categories.store') }}" onsubmit="return check();">
+        {{ csrf_field() }}
+        <input type="hidden" value="0" name="parent_id" id="parent_id">
+        <table cellspacing="0" class="tb">
+            <tr>
 
-                    <ol class="breadcrumb">
-                        <li><a href="{{ route('admin.dash.index') }}">控制台</a></li>
-                        <li class="active">分类</li>
-                    </ol>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
+                <td class="tl"><span class="f_hid">*</span> 上级分类</td>
+                <td><select name=""  id="parent_category">
 
-            <div class="row">
-
-                <div class="col-md-12 col-xs-12">
-
-                    @include('admin.flash_error_or_success')
-                    <div class="white-box">
-
-                        <form class="form-horizontal" method="post" action="{{ route('admin.categories.store') }}">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <input type="hidden" value="0" name="parent_id" id="parent_id">
-                                <label class="col-sm-12">主分类</label>
-                                <div class="input-group">
-                                    <div class="col-sm-12">
-                                        <select id="parent_category">
-
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-12">分类名称</label>
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" value="" name="name"> </div>
-                            </div>
+                    </select> <img src="/admin/image/tips.png" width="16" height="16" title="如果不选择，则为顶级分类" alt="tips" class="c_p" onclick="Dconfirm(this.title, '', 450);" /></td>
+            </tr>
+            <tr>
+                <td class="tl"><span class="f_red">*</span> 分类名称</td>
+                <td><textarea name="name"  id="name" style="width:200px;height:100px;overflow:visible;"></textarea>
+                    <img src="/admin/image/tips.png" width="16" height="16" title="允许批量添加，一行一个，点回车换行" alt="tips" class="c_p" onclick="Dconfirm(this.title, '', 450);" /><br/><span id="dname" class="f_red"></span></td>
+            </tr>
 
 
-
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <button type="submit" class="btn btn-success"> 提交 </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        @section('footer')
-            @parent
-        @stop
-    </div>
-
+        </table>
+        <div class="sbt"><input type="submit" name="submit" value="确 定" class="btn-g"/>&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="取 消" class="btn" onclick="Go('?');"/></div>
+    </form>
+    <script type="text/javascript">
+        function check() {
+            if(Dd('name').value == '') {
+                Dmsg('请填写分类名称', 'name');
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script type="text/javascript">Menuon(0);</script>
 
 @stop
 
 
-@section('scripts')
+@section('footer')
     @parent
-    <script type="text/javascript">
-        //Alerts
-        $(".myadmin-alert .closed").click(function (event) {
-            $(this).parents(".myadmin-alert").fadeToggle(350);
-            return false;
-        });
-        /* Click to close */
-        $(".myadmin-alert-click").click(function (event) {
-            $(this).fadeToggle(350);
-            return false;
-        });
-    </script>
-
-
     <!-- LinkageSel js-->
-    <script src="{{ asset('/static/plugins/bower_components/LinkageSel/comm.js') }}"></script>
-    <script src="{{ asset('/static/plugins/bower_components/LinkageSel/linkagesel-min.js') }}"></script>
+    <script src="{{ asset('admin/script/LinkageSel/comm.js') }}"></script>
+    <script src="{{ asset('admin/script/LinkageSel/linkagesel-min.js') }}"></script>
     <script>
         var opts = {
             data: @json($top_categories),
             ajax: '{{ route('admin.categories.subcategory') }}',
-            selClass: 'form-control',
             select: '#parent_category',
             fixWidth: 150,
-            loaderImg: '{{ asset('/static/plugins/bower_components/LinkageSel/ui-anim_basic_16x16.gif') }}',
+            head: '请选择分类',
+            loaderImg: '{{ asset('admin/script/LinkageSel/ui-anim_basic_16x16.gif') }}',
             autoLink: false,
+            @isset($parent_ids)defVal: @json($parent_ids),@endisset
         };
 
         var linkageSel = new LinkageSel(opts);

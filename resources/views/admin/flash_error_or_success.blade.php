@@ -1,4 +1,5 @@
 @section('header')
+    @parent
     <link href="{{ asset('admin/css/bootstrap.min.css') }}" rel="stylesheet">
 @stop
 @if(session('status'))
@@ -21,6 +22,7 @@
 
 
 @section('footer')
+    @parent
     <script type="text/javascript">
         //Alerts
         $(".myadmin-alert .closed").click(function (event) {

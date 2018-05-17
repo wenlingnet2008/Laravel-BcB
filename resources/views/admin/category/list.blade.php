@@ -1,11 +1,10 @@
-@extends('layouts.admin.header')
+@extends('layouts.admin.layout')
 @section('menu')
     <table cellpadding="0" cellspacing="0">
         <tr>
-            <td id="Tab0" class="tab"><a href="?file=category&action=add&mid=5&parentid=0" >添加分类</a></td>
+            <td id="Tab0" class="tab"><a href="{{ route('admin.categories.create') }}" >添加分类</a></td>
             <td id="Tab1" class="tab"><a href="{{ route('admin.categories.list') }}" >管理分类</a></td>
-            <td id="Tab2" class="tab"><a href="?file=category&action=copy&mid=5" >分类复制</a></td>
-            <td id="Tab3" class="tab"><a href="?file=category&action=caches&mid=5" >更新缓存</a></td></tr>
+            <td id="Tab2" class="tab"><a href="{{ route('admin.categories.fixtree') }}" >修复分类</a></td></tr>
     </table>
 @stop
 
@@ -23,9 +22,9 @@
     {{csrf_field()}}
     @if(request()->route('catid'))
     <div class="tt">
-        <a href="{{ route('admin.categories.list') }}">分类</a> >
+        <a href="{{ route('admin.categories.list') }}">分类</a> -
         @foreach($bread_nav as $category)
-            <a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}" @if ($loop->last)class="t" @endif >{{ $category['name'] }}</a> @if ($loop->last) @else > @endif
+            <a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}" @if ($loop->last)class="t" @endif >{{ $category['name'] }}</a> @if ($loop->last) @else - @endif
         @endforeach
 
 
@@ -52,9 +51,9 @@
             <td title="管理子分类"><a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}">{{ $category->descendants_count }}</a></td>
             <td title="管理属性"><a href="javascript:Dwidget('?file=property&catid=1', '[分类名称]扩展属性');">0</a></td>
             <td>
-                <a href="?file=category&action=add&mid=5&parentid=1"><img src="/admin/image/add.png" width="16" height="16" title="添加子分类" alt=""/></a>&nbsp;
-                <a href="?file=category&action=edit&mid=5&catid=1"><img src="/admin/image/edit.png" width="16" height="16" title="修改" alt=""/></a>&nbsp;
-                <a href="?file=category&action=delete&mid=5&catid=1&parentid=0" onclick="return _delete();"><img src="/admin/image/delete.png" width="16" height="16" title="删除" alt=""/></a></td>
+                <a href="{{ route('admin.categories.create') }}?catid={{$category->catid}}"><img src="/admin/image/add.png" width="16" height="16" title="添加子分类" alt=""/></a>&nbsp;
+                <a href="{{ route('admin.categories.edit', ['catid'=>$category->catid]) }}"><img src="/admin/image/edit.png" width="16" height="16" title="修改" alt=""/></a>&nbsp;
+                <a href="#" onclick="return delete_category({{$category->catid}});"><img src="/admin/image/delete.png" width="16" height="16" title="删除" alt=""/></a></td>
         </tr>
         @endforeach
     </table>
@@ -65,7 +64,7 @@
 </span>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <input type="submit" name="submit" value="更新分类" class="btn-g" onclick="this.form.action='{{ route('admin.categories.list') }}'"/>&nbsp;&nbsp;
-        <input type="submit" value="删除选中" class="btn-r" onclick="if(confirm('确定要删除选中分类吗？此操作将不可撤销')){this.form.action='?mid=5&file=category&parentid=0&action=delete'}else{return false;}"/>&nbsp;&nbsp;
+
     </div>
 </form>
 
@@ -85,3 +84,21 @@
 </script>
 <script type="text/javascript">Menuon(1);</script>
 @stop
+
+<script>
+    function delete_category(catid) {
+        var r=confirm("注意：删除此分类将会连它的子类也删除,确定要删除吗?");
+        if (r==true)
+        {
+            $.ajax({
+                type: "DELETE",
+                url: "{{ url('admin/categories') }}/"+ catid,
+                data: "_token={{ csrf_token() }}",
+                success: function(msg){
+                    alert( msg.message );
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>

@@ -24,6 +24,22 @@ class CategoryRequest extends FormRequest
         {
             return $input->parent_id > 0;
         });
+
+    }
+
+    public function all($keys = null){
+        $results = parent::all($keys);
+        if(isset($results['name'])){
+            $name = $results['name'];
+            if(preg_match('/[\r\n|\r|\n]/', $name)){
+                $name = preg_replace('/[\r\n|\r|\n]+/', '\n', $name);
+                $results['name'] = explode('\n', $name);
+            }
+        }
+        //替换数据 ，使其在 request->input 方法中能得到替换的数据
+        $this->replace($results);
+
+        return $results;
     }
 
 
@@ -38,6 +54,7 @@ class CategoryRequest extends FormRequest
             case 'POST': {
                 return [
                     'name' => ['required', 'max:50', Rule::unique('categories', 'name')],
+                    'name.*' => ['required', 'max:50', Rule::unique('categories', 'name')],
                     'parent_id' => ['sometimes', 'numeric'],
                 ];
             }

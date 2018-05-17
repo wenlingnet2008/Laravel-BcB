@@ -159,9 +159,8 @@
                     <dd onclick="c(this);" style="display:none;"><a href="?moduleid=5&file=setting">模块设置</a></dd>
                 </dl>
                 <dl id="dl_6">
-                    <dt onclick="m(6);" onmouseover="this.className='dt_on';" onmouseout="this.className='';">求购管理</dt>
-                    <dd onclick="c(this);" style="display:none;"><a href="?moduleid=6&action=add">添加求购</a></dd>
-                    <dd onclick="c(this);" style="display:none;"><a href="?moduleid=6">求购列表</a></dd>
+                    <dt onclick="m(6);" onmouseover="this.className='dt_on';" onmouseout="this.className='';">品牌管理</dt>
+                    <dd onclick="c(this);" style="display:none;"><a href="{{ route('admin.brands.index') }}">品牌列表</a></dd>
                     <dd onclick="c(this);" style="display:none;"><a href="?moduleid=6&action=check">审核求购</a></dd>
                     <dd onclick="c(this);" style="display:none;"><a href="?file=category&mid=6">行业分类</a></dd>
                     <dd onclick="c(this);" style="display:none;"><a href="?moduleid=6&file=html">更新数据</a></dd>

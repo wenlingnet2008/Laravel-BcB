@@ -1,4 +1,4 @@
-@extends('layouts.admin.header')
+@extends('layouts.admin.layout')
 
 @section('menu')
     <table cellpadding="0" cellspacing="0">
@@ -56,7 +56,7 @@
         <tr><td>内存</td><td>
                 {{ $sysinfo['memory'] }}</td></tr>
         <tr><td>Laravel 版本</td><td>
-                {{ $sysinfo['laraver'] }} <a href="https://www.laravel.com" target="_blank"> Laravel框架 </a></td></tr>
+                {{ $sysinfo['laraver'] }} 本程序使用<a href="https://www.laravel.com" target="_blank"> Laravel框架 </a></td></tr>
         <tr><td>服务器时间</td><td>
                 {{ $sysinfo['timezone'] }}</td></tr>
 

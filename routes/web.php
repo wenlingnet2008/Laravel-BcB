@@ -22,18 +22,20 @@ Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
     Route::post('change_password', 'DashboardController@changePassword')->name('dash.changepassword');
 
     Route::get('logout', 'LoginController@logout')->name('logout');
-
-    Route::get('categories/subcategory', 'CategoryController@subcategory')->name('categories.subcategory');
-    Route::any('categories/list/{catid?}', 'CategoryController@clist')->name('categories.list');
-    Route::get('categories/search', 'CategoryController@search')->name('categories.search');
-
     Route::get('left', function(){ return view('layouts.admin.left');})->name('left');
 
+
+    Route::post('brands/upload', 'BrandController@uploadThumb')->name('brands.upload');
     Route::get('brands/search', 'BrandController@search')->name('brands.search');
     Route::resource('brands', 'BrandController',[
         'parameters' => ['brands'=> 'brandid'],
     ]);
 
+
+    Route::get('categories/subcategory', 'CategoryController@subcategory')->name('categories.subcategory');
+    Route::get('categories/fixtree', 'CategoryController@fixTree')->name('categories.fixtree');
+    Route::any('categories/list/{catid?}', 'CategoryController@clist')->name('categories.list');
+    Route::get('categories/search', 'CategoryController@search')->name('categories.search');
     Route::resource('categories', 'CategoryController',[
         'parameters' => ['categories'=> 'catid'],
     ]);
