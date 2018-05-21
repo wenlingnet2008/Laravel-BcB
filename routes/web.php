@@ -40,6 +40,11 @@ Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
         'parameters' => ['categories'=> 'catid'],
     ]);
 
+
+    Route::resource('paras', 'ParaController',[
+        'parameters' => ['paras' => 'dpid'],
+    ]);
+
 });
 
 

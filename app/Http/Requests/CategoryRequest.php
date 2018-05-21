@@ -29,16 +29,15 @@ class CategoryRequest extends FormRequest
 
     public function all($keys = null){
         $results = parent::all($keys);
-        if(isset($results['name'])){
+        if(isset($results['name']) and !is_array($results['name'])){
             $name = $results['name'];
             if(preg_match('/[\r\n|\r|\n]/', $name)){
                 $name = preg_replace('/[\r\n|\r|\n]+/', '\n', $name);
                 $results['name'] = explode('\n', $name);
+                //替换数据 ，使其在 request->input 方法中能得到替换的数据
+                $this->replace($results);
             }
         }
-        //替换数据 ，使其在 request->input 方法中能得到替换的数据
-        $this->replace($results);
-
         return $results;
     }
 

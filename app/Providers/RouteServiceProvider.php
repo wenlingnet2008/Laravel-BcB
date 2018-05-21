@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Brand;
+use App\Models\DefaultPara;
 use App\Models\Member;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -42,6 +43,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::pattern('userid', '[0-9]+');
         Route::bind('userid', function($userid){
             return Member::where('userid', $userid)->firstOrFail();
+        });
+
+        //para
+        Route::pattern('dpid', '[0-9]+');
+        Route::bind('dpid', function($dpid){
+           return DefaultPara::findOrFail($dpid);
         });
 
         parent::boot();

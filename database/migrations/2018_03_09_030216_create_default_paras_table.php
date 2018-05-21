@@ -19,7 +19,9 @@ class CreateDefaultParasTable extends Migration
             $table->integer('catid')->unsigned();
             $table->string('units', 255)->nullable();
             $table->string('rules', 255)->nullable();
+            $table->smallInteger('list_order')->default(0)->comment('排序');
 
+            $table->unique(['catid', 'name']);
             $table->foreign('catid')->references('catid')->on('categories');
         });
     }

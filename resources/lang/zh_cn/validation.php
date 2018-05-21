@@ -22,6 +22,7 @@ return [
     'different'            => ':attribute 必须不同于:other',
     'digits'               => ':attribute 必须是 :digits 位',
     'digits_between'       => ':attribute 必须在 :min and :max 位之间',
+    'distinct'             => ':attribute 字段中有重复的值.',
     'email'                => ':attribute 必须是一个合法的电子邮件地址。',
     'filled'               => ':attribute 的字段是必填的',
     'exists'               => '选定的 :attribute 是无效的',

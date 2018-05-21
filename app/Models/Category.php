@@ -33,6 +33,10 @@ class Category extends Model
         //return $this->belongsToMany('App\Models\Series', 'mapping_series_category', 'catid', 'serid');
     }
 
+    public function paras(){
+        return $this->hasMany('App\Models\DefaultPara', 'catid', 'catid');
+    }
+
 
     public function saveCategory(){
         $this->linkurl = str_slug($this->name);

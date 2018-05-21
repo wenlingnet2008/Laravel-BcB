@@ -4,6 +4,7 @@
         <tr>
             <td id="Tab0" class="tab"><a href="{{ route('admin.brands.create') }}" >添加品牌</a></td>
             <td id="Tab1" class="tab"><a href="{{ route('admin.brands.index') }}" >管理品牌</a></td>
+        </tr>
     </table>
 @stop
 

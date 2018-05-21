@@ -13,4 +13,8 @@ class DefaultPara extends Model
     public function values(){
         return $this->hasMany('App\Models\DefaultParaValue', 'dpid');
     }
+
+    public function category(){
+        return $this->belongsTo('App\Models\Category', 'catid', 'catid');
+    }
 }

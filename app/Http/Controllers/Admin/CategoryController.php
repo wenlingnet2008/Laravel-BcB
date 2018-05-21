@@ -37,6 +37,7 @@ class CategoryController extends Controller
                 'category.*.name' => ['required', 'max:50', 'unique:categories,name,*,catid'],
             ]);
 
+
             $catids = $request->input('catids');
             $update_categories = $request->input('category');
 
@@ -50,10 +51,10 @@ class CategoryController extends Controller
             return back()->with(['status' => '更新成功']);
         }
         if(is_null($category)){
-            $categories = Category::withCount('descendants')->where('parent_id', null)->orderBy('list_order', 'asc')->get();
+            $categories = Category::withCount(['descendants', 'paras'])->where('parent_id', null)->orderBy('list_order', 'asc')->get();
             $bread_nav = [];
         }else{
-            $categories = $category->children()->withCount('descendants')->orderBy('list_order', 'asc')->get();
+            $categories = $category->children()->withCount(['descendants', 'paras'])->orderBy('list_order', 'asc')->get();
             $bread_nav = $category->ancestors->push($category);
         }
 

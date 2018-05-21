@@ -2,9 +2,10 @@
 @section('menu')
     <table cellpadding="0" cellspacing="0">
         <tr>
-            <td id="Tab0" class="tab"><a href="{{ route('admin.categories.create') }}" >添加分类</a></td>
-            <td id="Tab1" class="tab"><a href="{{ route('admin.categories.list') }}" >管理分类</a></td>
-            <td id="Tab2" class="tab"><a href="{{ route('admin.categories.fixtree') }}" >修复分类</a></td></tr>
+            <td id="Tab0" class="tab"><a href="{{ route('admin.categories.create') }}">添加分类</a></td>
+            <td id="Tab1" class="tab"><a href="{{ route('admin.categories.list') }}">管理分类</a></td>
+            <td id="Tab2" class="tab"><a href="{{ route('admin.categories.fixtree') }}">修复分类</a></td>
+        </tr>
     </table>
 @stop
 
@@ -49,7 +50,7 @@
             </td>
             <td>0</td>
             <td title="管理子分类"><a href="{{ route('admin.categories.list', ['catid'=>$category['catid']]) }}">{{ $category->descendants_count }}</a></td>
-            <td title="管理属性"><a href="javascript:Dwidget('?file=property&catid=1', '[分类名称]扩展属性');">0</a></td>
+            <td title="管理属性"><a href="javascript:Dwidget('{{ route('admin.paras.index') }}?catid={{$category->catid}}', '[{{ $category->name }}]扩展属性');">{{ $category->paras_count }}</a></td>
             <td>
                 <a href="{{ route('admin.categories.create') }}?catid={{$category->catid}}"><img src="/admin/image/add.png" width="16" height="16" title="添加子分类" alt=""/></a>&nbsp;
                 <a href="{{ route('admin.categories.edit', ['catid'=>$category->catid]) }}"><img src="/admin/image/edit.png" width="16" height="16" title="修改" alt=""/></a>&nbsp;
