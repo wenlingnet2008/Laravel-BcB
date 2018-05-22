@@ -47,6 +47,11 @@ Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
         'parameters' => ['paras' => 'dpid'],
     ]);
 
+    Route::get('members/search', 'MemberController@search')->name('members.search');
+    Route::resource('members', 'MemberController', [
+        'parameters' => ['members' => 'userid']
+    ]);
+
 });
 
 

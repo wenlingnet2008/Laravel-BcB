@@ -23,7 +23,7 @@ class CreateCompaniesTable extends Migration
             $table->string('business', 255)->default('')->comment('经营范围');
             $table->string('telephone', 50)->default('');
             $table->string('fax', 50)->default('');
-            $table->string('email', 50)->default('');
+            $table->string('mail', 50)->default('');
             $table->string('address', 255)->default('')->comment('地址');
             $table->string('homepage', 255)->default('');
             $table->text('content')->nullable()->comment('公司介绍');

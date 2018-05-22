@@ -300,8 +300,8 @@
                     <dt id="dt_2" onclick="s(this);" onmouseover="this.className='dt_on';"
                         onmouseout="this.className='';">会员管理
                     </dt>
-                    <dd onclick="c(this);"><a href="?moduleid=2&action=add">添加会员</a></dd>
-                    <dd onclick="c(this);"><a href="?moduleid=2">会员列表</a></dd>
+                    <dd onclick="c(this);"><a href="{{ route('admin.members.create') }}">添加会员</a></dd>
+                    <dd onclick="c(this);"><a href="{{ route('admin.members.index') }}">会员列表</a></dd>
                     <dd onclick="c(this);"><a href="?moduleid=2&action=check">审核会员</a></dd>
                     <dd onclick="c(this);"><a href="?moduleid=4&file=vip">VIP管理</a></dd>
                     <dd onclick="c(this);"><a href="?moduleid=2&file=grade&action=check">会员升级</a></dd>

@@ -42,12 +42,13 @@ class MemberRequest extends FormRequest
                     'email' => ['required', 'email', Rule::unique('members', 'email')],
                     'password' => ['required', 'confirmed'],
                     'password_confirmation' => ['required'],
-                    'gender' => ['sometimes', 'required', 'max:10'],
-                    'company' => ['sometimes', 'required', 'max:150'],
+                    'name' => ['sometimes', 'required',  'max:30', Rule::unique('members', 'name')],
+                    'gender' => ['sometimes', 'nullable', 'max:10'],
+                    'company' => ['sometimes',  'required', 'max:150'],
                     'true_name' => ['sometimes','required', 'max:50'],
-                    'mobile'    => ['sometimes', 'required', 'max:30'],
-                    'department'    => ['sometimes', 'required', 'max:30'],
-                    'career'    => ['sometimes', 'required', 'max:30'],
+                    'mobile'    => ['sometimes', 'nullable', 'max:30'],
+                    'department'    => ['sometimes', 'nullable', 'max:30'],
+                    'career'    => ['sometimes', 'nullable', 'max:30'],
                 ];
             }
             case 'PUT': {

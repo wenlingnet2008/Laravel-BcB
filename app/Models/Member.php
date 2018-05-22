@@ -21,9 +21,6 @@ class Member extends Authenticatable
 
     public function saveMember(){
         $this->password = bcrypt($this->password);
-        $this->company = $this->email;
-        $this->true_name = strstr($this->email, '@', true);
-        $this->user_name = $this->generateUserName();
         $this->save();
     }
 
