@@ -5,7 +5,7 @@
     <tr>
         <td id="Tab0" class="tab"><a href="{{route('admin.paras.create')}}?catid={{$category->catid}}">添加属性</a></td>
         <td id="Tab1" class="tab"><a href="{{route('admin.paras.index')}}?catid={{$category->catid}}">属性参数</a></td>
-        <td id="Tab2" class="tab"><a href="?file=property&catid=1&action=copy">复制属性</a></td>
+        <td id="Tab2" class="tab"><a href="{{route('admin.paras.copy')}}?catid={{$category->catid}}">复制属性</a></td>
     </tr>
 
 </table>

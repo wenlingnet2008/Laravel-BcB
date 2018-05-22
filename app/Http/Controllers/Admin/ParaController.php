@@ -27,6 +27,23 @@ class ParaController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->method() == 'POST'){
+            $this->validate($request, [
+                'dpid' => ['required', 'array'],
+                'dpid.*' => ['required', 'integer'],
+                'list_order' => ['required', 'array'],
+                'list_order.*' => ['required', 'integer'],
+            ]);
+
+            $dpids = $request->input('dpid');
+            $list_order = $request->input('list_order');
+            foreach($dpids as $dpid){
+                DefaultPara::where('dpid', $dpid)->update(['list_order'=>$list_order[$dpid]]);
+            }
+            return back()->with(['status' => '更新成功']);
+
+        }
+
         $data['category'] = Category::findOrFail(intval($request->input('catid')));
         $data['paras'] = DefaultPara::with(['values'])->where('catid', $request->input('catid'))->orderBy('list_order', 'ASC')->get();
         return view('admin.para.list', $data);
@@ -60,7 +77,6 @@ class ParaController extends Controller
 
         $values = $request->input('value');
         if(is_array($values)){
-            $values = array_unique($values);
             foreach($values as $value){
                 $default_value = new DefaultParaValue();
                 $default_value->value = $value;
@@ -156,8 +172,91 @@ class ParaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(DefaultPara $para)
     {
-        //
+        DefaultParaValue::where('dpid', $para->dpid)->delete();
+        $para->delete();
+        return \response()->json(['message'=> '删除成功']);
+    }
+
+
+    public function copy(Request $request){
+
+
+        $catid = $request->input('catid');
+        $category = Category::findOrFail($catid);
+        $data['category'] = $category;
+
+
+        if($request->method() == 'POST'){
+
+            $validator = Validator::make($request->all(), [
+                'type' => ['required', 'integer'],
+                'catid' => ['required', 'integer'],
+                'fromid' => ['required_if:type,1', ],
+                'dpid' => ['required_if:type,0'],
+            ],[
+                'fromid.exists' => '选定的分类没有任何属性',
+                'dpid.exists' => '所填写的属性ID不存在',
+            ]);
+
+            $validator->sometimes('fromid', [
+                'integer', 'min:1',
+                Rule::notIn($category->catid),
+                Rule::exists('default_paras', 'catid'),
+            ], function($input){
+                    return intval($input->type) === 1;
+            });
+
+
+            $validator->sometimes('dpid', [
+                'integer',
+                Rule::exists('default_paras', 'dpid'),
+            ], function($input){
+                return intval($input->type) === 0;
+            });
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
+
+
+            if(intval($request->input('type')) === 1){
+                $fromid = $request->input('fromid');
+                $paras = DefaultPara::with('values')->where('catid', $fromid)->get();
+
+            }else{
+                $dpid  = $request->input('dpid');
+                $paras = DefaultPara::with('values')->where('dpid', $dpid)->get();
+            }
+
+            foreach($paras as $p){
+                if(! DefaultPara::where(['catid'=>$category->catid, 'name'=> $p->name])->first()){
+                    $para = new DefaultPara();
+                    $para->name = $p->name;
+                    $para->list_order = $p->list_order;
+                    $para->category()->associate($category);
+                    $para->save();
+
+                    foreach($p->values  as $v){
+                        $para_value = new DefaultParaValue();
+                        $para_value->value = $v->value;
+                        $para_value->para()->associate($para);
+                        $para_value->save();
+                    }
+                }
+            }
+
+            return back()->with(['status'=>'复制成功']);
+        }
+
+
+        $top_categories =  Category::where('parent_id', null)->get();
+        $data['top_categories'] = [];
+        foreach($top_categories as $category){
+            $data['top_categories'][$category->catid] = ['name'=> $category->name];
+        }
+
+        return view('admin.para.copy', $data);
     }
 }

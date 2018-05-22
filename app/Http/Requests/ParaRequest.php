@@ -56,6 +56,7 @@ class ParaRequest extends FormRequest
                         $query->where('catid', $this->input('catid'));
                     })],
                     'value' =>  ['required'],
+                    'value.*' => ['required', 'distinct'],
                 ];
             }
             case 'PUT': {

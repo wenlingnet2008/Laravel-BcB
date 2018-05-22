@@ -41,6 +41,8 @@ Route::name('admin.')->prefix('admin')->namespace('Admin')->group(function (){
     ]);
 
 
+    Route::post('paras/index', 'ParaController@index')->name('paras.batchupdate');
+    Route::any('paras/copy', 'ParaController@copy')->name('paras.copy');
     Route::resource('paras', 'ParaController',[
         'parameters' => ['paras' => 'dpid'],
     ]);
