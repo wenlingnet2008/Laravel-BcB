@@ -21,9 +21,9 @@ class CreateMembersTable extends Migration
             $table->string('email', 50)->unique();
             $table->string('gender', 10)->default('Female');
             $table->string('true_name', 50)->default('')->comment('联系人');
-            $table->string('mobile', 30)->default('');
-            $table->string('department', 30)->default('')->comment('部门');
-            $table->string('career', 100)->default('')->comment('职位');
+            $table->string('mobile', 30)->nullable();
+            $table->string('department', 30)->nullable()->comment('部门');
+            $table->string('career', 100)->nullable()->comment('职位');
             $table->string('regip', 30)->default('');
             $table->string('auth', 255)->default('');
             $table->boolean('is_admin')->default(0);

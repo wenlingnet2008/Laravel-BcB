@@ -64,7 +64,7 @@ class MemberController extends Controller
             'post.company' => ['required', 'max:150', 'unique:companies,name'],
             'post.business' => ['required', 'max:255'],
             'post.mode' => ['nullable', 'max:100'],
-            'post.capital' => ['nullable', 'integer'],
+            'post.capital' => ['nullable', 'numeric'],
             'post.regunit' => ['nullable', 'max:15'],
             'post.regyear' => ['required', 'integer', 'max:9999'],
             'post.address' => ['required', 'max:255'],
@@ -117,9 +117,12 @@ class MemberController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Member $member)
     {
-        //
+
+        $data['member'] = $member;
+
+        return view('admin.member.edit', $data);
     }
 
     /**
@@ -129,9 +132,51 @@ class MemberController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(MemberRequest $request, Member $member)
     {
-        //
+        $this->validate($request, [
+            'post.company' => ['required', 'max:150', Rule::unique('companies', 'name')->ignore($member->userid, 'userid')],
+            'post.business' => ['required', 'max:255'],
+            'post.mode' => ['nullable', 'max:100'],
+            'post.capital' => ['nullable', 'numeric'],
+            'post.regunit' => ['nullable', 'max:15'],
+            'post.regyear' => ['required', 'integer', 'max:9999'],
+            'post.address' => ['required', 'max:255'],
+            'post.telephone' => ['required', 'max:50'],
+            'post.fax' => ['nullable', 'max:50'],
+            'post.mail' => ['nullable', 'max:50'],
+            'post.homepage' => ['nullable', 'max:255'],
+            'post.content' => ['required'],
+        ]);
+
+        $member->email = $request->input('email');
+        if($request->filled('password')){
+            $member->password = $request->input('password');
+        }
+        $member->regip = $request->ip();
+        $member->gender = $request->input('gender');
+        $member->true_name = $request->input('true_name');
+        $member->department = $request->input('department');
+        $member->career = $request->input('career');
+        $member->mobile = $request->input('mobile');
+        $member->saveMember();
+
+        $company = $member->company;
+        $company->userid = $member->userid;
+        $company->name = $request->input('post.company');
+        $company->business = $request->input(('post.business'));
+        if($request->filled('post.mode')) $company->mode = implode('|', $request->input('post.mode'));
+        $company->capital = $request->input('post.capital');
+        $company->regyear = $request->input('post.regyear');
+        $company->address = $request->input('post.address');
+        $company->telephone = $request->input('post.telephone');
+        $company->fax = $request->input('post.fax');
+        $company->mail = $request->input('post.mail');
+        $company->homepage = $request->input('post.homepage');
+        $company->content = $request->input('post.content');
+        $company->save();
+
+        return back()->with(['status'=>'更新成功']);
     }
 
     /**

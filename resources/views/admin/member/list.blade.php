@@ -56,10 +56,8 @@
                 <td class="px12">{{$member->created_at}}</td>
 
                 <td>
-                    <a href="?moduleid=2&action=edit&userid=2">
+                    <a href="{{route('admin.members.edit', ['userid'=>$member->userid])}}">
                         <img src="/admin/image/edit.png" width="16" height="16" title="修改" alt=""/></a>&nbsp;
-                    <a href="?moduleid=2&action=login&userid=2" target="_blank">
-                        <img src="/admin/image/set.png" width="16" height="16" title="进入会员商务中心" alt=""/></a>&nbsp;
                     <a href="?moduleid=2&file=index&action=delete&userid=2"
                        onclick="if(!confirm('确定危险！！要删除此会员吗？系统将删除选中用户所有信息，此操作将不可撤销')) return false;"><img
                                 src="/admin/image/delete.png" width="16" height="16" title="删除" alt=""/></a>

@@ -52,13 +52,17 @@ class MemberRequest extends FormRequest
                 ];
             }
             case 'PUT': {
+                $member = $this->route('userid');
                 return [
+                    'email' => ['nullable', 'email', Rule::unique('members', 'email')->ignore($member->userid, 'userid')],
+                    'password' => ['nullable', 'confirmed'],
+                    'password_confirmation' => ['nullable'],
                     'gender' => [ 'required', 'max:10'],
-                    'company' => ['required', 'max:150'],
                     'true_name' => ['required', 'max:50'],
-                    'mobile'    => ['required', 'max:30'],
-                    'department'    => ['required', 'max:30'],
-                    'career'    => ['required', 'max:30'],
+                    'company' => ['sometimes',  'required', 'max:150'],
+                    'mobile'    => ['sometimes', 'nullable', 'max:30'],
+                    'department'    => ['sometimes', 'nullable', 'max:30'],
+                    'career'    => ['sometimes', 'nullable', 'max:30'],
                 ];
             }
             case 'PATCH':

@@ -13,53 +13,54 @@
 
 @section('content')
     @include('admin.flash_error_or_success')
-    <form method="post" action="{{ route('admin.members.store') }}" onsubmit="return Dcheck();">
+    <form method="post" action="{{ route('admin.members.update', ['userid'=>$member->userid]) }}" onsubmit="return Dcheck();">
         {{csrf_field()}}
+        {{method_field('PUT')}}
         <table cellspacing="0" class="tb">
             <tr>
                 <td class="tl"><span class="f_red">*</span> 会员登录名</td>
-                <td><input type="text" size="20" name="username" id="username" value="@if(old('username')){{old('username')}}@endif" />&nbsp;<span
-                            id="dusername" class="f_red"></span></td>
+                <td>{{$member->name}}</td>
             </tr>
             <tr>
-                <td class="tl"><span class="f_red">*</span> 登录密码</td>
+                <td class="tl"><span class="f_hid">*</span> 登录密码</td>
                 <td><input type="password" size="20" name="password" id="password" value=""
-                           autocomplete="off"/>&nbsp;<span id="dpassword" class="f_red"></span></td>
+                           autocomplete="off"/><span
+                            class="f_gray">[如不更改,请留空]</span>&nbsp;<span id="dpassword" class="f_red"></span></td>
             </tr>
             <tr>
-                <td class="tl"><span class="f_red">*</span> 重复输入密码</td>
+                <td class="tl"><span class="f_hid">*</span> 重复输入密码</td>
                 <td><input type="password" size="20" name="password_confirmation" id="cpassword"
                            autocomplete="off"/>&nbsp;<span id="dcpassword" class="f_red"></span></td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_red">*</span> 电子邮件</td>
-                <td><input type="text" size="30" name="email" id="email" value="@if(old('email')){{old('email')}}@endif"/> <span
+                <td><input type="text" size="30" name="email" id="email" value="@if(old('email')){{old('email')}}@else{{$member->email}}@endif"/> <span
                             class="f_gray">[不公开]</span>&nbsp;<span id="demail" class="f_red"></span></td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_red">*</span> 真实姓名</td>
-                <td><input type="text" size="20" name="true_name" id="truename" value="@if(old('true_name')){{old('true_name')}}@endif"/>&nbsp;<span id="dtruename"
-                                                                                                  class="f_red"></span>
+                <td><input type="text" size="20" name="true_name" id="truename" value="@if(old('true_name')){{old('true_name')}}@else{{$member->true_name}}@endif"/>&nbsp;<span id="dtruename"
+                                                                                                                                                     class="f_red"></span>
                 </td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_red">*</span> 性别</td>
                 <td>
-                    <input type="radio" name="gender" value="Male" checked="checked"/> 先生&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="gender" value="Female"/> 女士
+                    <input type="radio" name="gender" value="Male" @if($member->gender == 'Male') checked @endif/> 先生&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="gender" value="Female" @if($member->gender == 'Female') checked @endif/> 女士
                 </td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_hid">*</span> 部门</td>
-                <td><input type="text" size="20" name="department" id="department" value="@if(old('department')){{old('department')}}@endif"/></td>
+                <td><input type="text" size="20" name="department" id="department" value="@if(old('department')){{old('department')}}@else{{$member->department}}@endif"/></td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_hid">*</span> 职位</td>
-                <td><input type="text" size="20" name="career" id="career" value="@if(old('career')){{old('career')}}@endif"/></td>
+                <td><input type="text" size="20" name="career" id="career" value="@if(old('career')){{old('career')}}@else{{$member->career}}@endif"/></td>
             </tr>
             <tr>
                 <td class="tl"><span class="f_hid">*</span> 手机号码</td>
-                <td><input type="text" size="20" name="mobile" id="mobile" value="@if(old('mobile')){{old('mobile')}}@endif"/></td>
+                <td><input type="text" size="20" name="mobile" id="mobile" value="@if(old('mobile')){{old('mobile')}}@else{{$member->mobile}}@endif"/></td>
             </tr>
         </table>
         <div id="company_detail">
@@ -67,14 +68,14 @@
             <table cellspacing="0" class="tb">
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 公司名称</td>
-                    <td><input type="text" size="60" name="post[company]" id="company" value="@if(old('post.company')){{old('post.company')}}@endif"/>
+                    <td><input type="text" size="60" name="post[company]" id="company" value="@if(old('post.company')){{old('post.company')}}@else{{$member->company->name}}@endif"/>
                         &nbsp;<span id="dcompany" class="f_red"></span></td>
                 </tr>
 
 
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 主要经营范围</td>
-                    <td><input type="text" size="80" name="post[business]" id="business" value="@if(old('post.business')){{old('post.business')}}@endif"/>&nbsp;
+                    <td><input type="text" size="80" name="post[business]" id="business" value="@if(old('post.business')){{old('post.business')}}@else{{$member->company->business}}@endif"/>&nbsp;
                         <span id="dbusiness" class="f_red"></span>
                     </td>
                 </tr>
@@ -84,9 +85,9 @@
                         <span id="com_mode"><input type="checkbox" name="post[mode][]" value="制造商"
                                                    onclick="check_mode(this,2);"> 制造商&nbsp;
                             <input type="checkbox"
-                                                                                                  name="post[mode][]"
-                                                                                                  value="贸易商"
-                                                                                                  onclick="check_mode(this,2);"> 贸易商&nbsp;<input
+                                   name="post[mode][]"
+                                   value="贸易商"
+                                   onclick="check_mode(this,2);"> 贸易商&nbsp;<input
                                     type="checkbox" name="post[mode][]" value="服务商" onclick="check_mode(this,2);"> 服务商&nbsp;<input
                                     type="checkbox" name="post[mode][]" value="其他机构" onclick="check_mode(this,2);"> 其他机构&nbsp;</span>
                         <span class="f_gray">(最多可选2种)</span></td>
@@ -100,44 +101,44 @@
                             <option value="美元">美元</option>
                             <option value="欧元">欧元</option>
                             <option value="英镑">英镑</option>
-                        </select> <input type="text" size="6" name="post[capital]" value="@if(old('post.capital')){{old('post.capital')}}@endif" id="capital"/> 万
+                        </select> <input type="text" size="6" name="post[capital]" value="@if(old('post.capital')){{old('post.capital')}}@else{{$member->company->capital}}@endif" id="capital"/> 万
                     </td>
                 </tr>
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 公司成立年份</td>
-                    <td><input type="text" size="15" name="post[regyear]" id="regyear" value="@if(old('post.regyear')){{old('post.regyear')}}@endif"/>
+                    <td><input type="text" size="15" name="post[regyear]" id="regyear" value="@if(old('post.regyear')){{old('post.regyear')}}@else{{$member->company->regyear}}@endif"/>
                         &nbsp;<span id="dregyear"  class="f_red"></span>
                         <span class="f_gray">(年份，如：2004)</span></td>
                 </tr>
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 公司地址</td>
-                    <td><input type="text" size="60" name="post[address]" id="address" value="@if(old('post.address')){{old('post.address')}}@endif"/>
+                    <td><input type="text" size="60" name="post[address]" id="address" value="@if(old('post.address')){{old('post.address')}}@else{{$member->company->address}}@endif"/>
                         &nbsp;<span id="daddress" class="f_red"></span>
                     </td>
                 </tr>
 
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 公司电话</td>
-                    <td><input type="text" size="20" name="post[telephone]" id="telephone" value="@if(old('post.telephone')){{old('post.telephone')}}@endif"/>
+                    <td><input type="text" size="20" name="post[telephone]" id="telephone" value="@if(old('post.telephone')){{old('post.telephone')}}@else{{$member->company->telephone}}@endif"/>
                         &nbsp;<span id="dtelephone"class="f_red"></span>
                     </td>
                 </tr>
                 <tr>
                     <td class="tl"><span class="f_hid">*</span> 公司传真</td>
-                    <td><input type="text" size="20" name="post[fax]" id="fax" value="@if(old('post.fax')){{old('post.fax')}}@endif"/></td>
+                    <td><input type="text" size="20" name="post[fax]" id="fax" value="@if(old('post.fax')){{old('post.fax')}}@else{{$member->company->fax}}@endif"/></td>
                 </tr>
                 <tr>
                     <td class="tl"><span class="f_hid">*</span> 公司Email</td>
-                    <td><input type="text" size="30" name="post[mail]" id="mail" value="@if(old('post.mail')){{old('post.mail')}}@endif"/> <span class="f_gray">[公开]</span></td>
+                    <td><input type="text" size="30" name="post[mail]" id="mail" value="@if(old('post.mail')){{old('post.mail')}}@else{{$member->company->mail}}@endif"/> <span class="f_gray">[公开]</span></td>
                 </tr>
                 <tr>
                     <td class="tl"><span class="f_hid">*</span> 公司网址</td>
-                    <td><input type="text" size="30" name="post[homepage]" id="homepage" value="@if(old('post.homepage')){{old('post.homepage')}}@endif"/></td>
+                    <td><input type="text" size="30" name="post[homepage]" id="homepage" value="@if(old('post.homepage')){{old('post.homepage')}}@else{{$member->company->homepage}}@endif"/></td>
                 </tr>
 
                 <tr>
                     <td class="tl"><span class="f_red">*</span> 公司介绍</td>
-                    <td><textarea name="post[content]" id="content" class="dsn">@if(old('post.content')){{old('post.content')}}@endif</textarea>
+                    <td><textarea name="post[content]" id="content" class="dsn">@if(old('post.content')){{old('post.content')}}@else{{$member->company->content}}@endif</textarea>
                         <script type="text/javascript">
                             var ModuleID = 5;
                             var DTAdmin = 1;
@@ -170,7 +171,7 @@
         </div>
 
         <div class="sbt"><input type="submit" name="submit" value="确 定" class="btn-g"/>&nbsp;&nbsp;&nbsp;&nbsp;<input
-                    type="button" value="取 消" class="btn" onclick="Go('?moduleid=2&file=index');"/></div>
+                    type="button" value="取 消" class="btn" onclick="Go('');"/></div>
     </form>
     <script type="text/javascript">
         function check_mode(c, m) {
@@ -190,22 +191,7 @@
         }
 
         function Dcheck() {
-            if (Dd('username').value == '') {
-                Dmsg('请填写会员登录名', 'username');
-                return false;
-            }
-            if (Dd('password').value == '') {
-                Dmsg('请填写会员登录密码', 'password');
-                return false;
-            }
-            if (Dd('cpassword').value == '') {
-                Dmsg('请重复输入密码', 'cpassword');
-                return false;
-            }
-            if (Dd('password').value != Dd('cpassword').value) {
-                Dmsg('两次输入的密码不一致', 'password');
-                return false;
-            }
+
             if (Dd('email').value == '') {
                 Dmsg('请填写电子邮箱', 'email');
                 return false;
